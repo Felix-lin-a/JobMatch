@@ -7,9 +7,18 @@
 
 import Foundation
 
+enum MatchJobError: Error{
+    case missingSkills
+}
+
 struct MatchJobUseCase{
     
-    func execute(job: PartTimeJob, student: StudentProfile) -> MatchResult{
+    func execute(job: PartTimeJob, student: StudentProfile) throws -> MatchResult{
+        
+        if student.skills.isEmpty {
+            throw MatchJobError.missingSkills
+        }
+        
         var score = 0
         var reasons: [String] = []
         

@@ -18,21 +18,122 @@ final class JobMatchTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-        // XCTest Documentation
-        // https://developer.apple.com/documentation/xctest
+    func testMatchJob() throws {
+        let useCase = MatchJobUseCase()
+        
+        let result = try useCase.execute(
+            job: sampleJob1,
+            student: sampleStudent
+        )
+        
+        XCTAssertEqual(result.score,70)
+    }
+    
+    func testNoMatchJob() throws {
+        let useCase = MatchJobUseCase()
+        
+        let result = try useCase.execute(
+            job: sampleJob3,
+            student: sampleStudent
+        )
+        
+        XCTAssertEqual(result.score,0)
     }
 
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+    func testPartialMatchJob() throws {
+        let useCase = MatchJobUseCase()
+        
+        let result = try useCase.execute(
+            job: sampleJob2,
+            student: sampleStudent
+        )
+        
+        XCTAssertEqual(result.score,30)
+    }
+    
+    func testMissingSkillsError() throws {
+        let student = StudentProfile(
+            name: "Alex",
+            skills: [],
+            availableDays: ["Monday"],
+            preferredLocation: "Sydney CBD"
+            )
+        
+        let useCase = MatchJobUseCase()
+        
+        XCTAssertThrowsError(
+            try useCase.execute(
+            job: sampleJob1,
+            student: student
+        )
+        ){error in
+            XCTAssertTrue(error is MatchJobError)
         }
     }
-
+    
+    func testSaveJob() throws {
+        let useCase = SaveJobUseCase()
+        
+        let result = try useCase.execute(
+            job: sampleJob1
+            , savedJobs: [])
+        
+        XCTAssertEqual(result.count,1)
+    }
+    
+    func testSaveJobAlreadySavedError() throws {
+        let useCase = SaveJobUseCase()
+        
+        XCTAssertThrowsError(
+            try useCase.execute(
+                job: sampleJob1,
+                savedJobs: [sampleJob1])
+        ){error in
+            XCTAssertTrue(error is SaveJobUseCaseError)
+        }
+    }
+    
+    func testUpdateStudentProfile() throws {
+        let useCase = UpdateStudentProfileUseCase()
+        
+        let result = try useCase.execute(
+            name: "Alex",
+            skills: ["Communication","IT Support"],
+            availableDays: ["Monday", "Wednesday"],
+            preferredLocation: "Sydney CBD"
+        )
+        
+        XCTAssertEqual(result.name, "Alex")
+        XCTAssertEqual(result.skills.count, 2)
+    }
+    
+    func testUpdateStudentProfileMissingNameError() throws {
+        let useCase = UpdateStudentProfileUseCase()
+        
+        XCTAssertThrowsError(
+            try useCase.execute(
+                name: "",
+                skills: ["Communication"],
+                availableDays: ["Monday"],
+                preferredLocation: "Sydney CBD"
+            )
+        ){error in
+            XCTAssertTrue(error is UpdateStudentProfileUseCaseError)
+        }
+    }
+    
+    func testUpdateStudentProfileMissingSkillsError() throws {
+        let useCase = UpdateStudentProfileUseCase()
+        
+        XCTAssertThrowsError(
+            try useCase.execute(
+                name: "Alex",
+                skills: [],
+                availableDays: ["Monday"],
+                preferredLocation: "Sydney CBD"
+            )
+        ){error in
+            XCTAssertTrue(error is UpdateStudentProfileUseCaseError)
+        }
+    }
 }

@@ -12,7 +12,7 @@ struct PartTimeJob:Identifiable{
     let title: String
     let company: String
     let location: String
-    let houtlyRate: Double
+    let hourlyRate: Double
     let requiredSkills: [String]
     let availableDays: [String]
 }

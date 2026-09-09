@@ -19,7 +19,7 @@ let sampleJob1 = PartTimeJob(
     title: "IT Support Assistant",
     company: "Tech Solutions",
     location: "Sydney CBD",
-    houtlyRate: 30.0,
+    hourlyRate: 30.0,
     requiredSkills: ["IT Support", "Communication"],
     availableDays: ["Monday", "Wednesday", "Friday"]
 )
@@ -29,7 +29,7 @@ let sampleJob2 = PartTimeJob(
     title: "Cafe Assistant",
     company: "City Cafe",
     location: "Sydney CBD",
-    houtlyRate: 25.0,
+    hourlyRate: 25.0,
     requiredSkills: ["Communication", "Customer Service"],
     availableDays: ["Tuesday", "Friday"]
     
@@ -40,7 +40,7 @@ let sampleJob3 = PartTimeJob(
     title: "Retail Assistant",
     company: "Fashion Store",
     location: "Parramatta",
-    houtlyRate: 27.0,
+    hourlyRate: 27.0,
     requiredSkills: ["Customer Service", "Sales"],
     availableDays: ["Saturday", "Sunday"]
 )
