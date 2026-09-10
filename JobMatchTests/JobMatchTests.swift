@@ -108,8 +108,9 @@ final class JobMatchTests: XCTestCase {
     }
     
     func testUpdateStudentProfileMissingNameError() throws {
+
         let useCase = UpdateStudentProfileUseCase()
-        
+
         XCTAssertThrowsError(
             try useCase.execute(
                 name: "",
@@ -117,14 +118,19 @@ final class JobMatchTests: XCTestCase {
                 availableDays: ["Monday"],
                 preferredLocation: "Sydney CBD"
             )
-        ){error in
-            XCTAssertTrue(error is UpdateStudentProfileUseCaseError)
+        ) { error in
+
+            XCTAssertEqual(
+                error as? UpdateStudentProfileUseCaseError,
+                .missingName
+            )
         }
     }
     
     func testUpdateStudentProfileMissingSkillsError() throws {
+
         let useCase = UpdateStudentProfileUseCase()
-        
+
         XCTAssertThrowsError(
             try useCase.execute(
                 name: "Alex",
@@ -132,8 +138,12 @@ final class JobMatchTests: XCTestCase {
                 availableDays: ["Monday"],
                 preferredLocation: "Sydney CBD"
             )
-        ){error in
-            XCTAssertTrue(error is UpdateStudentProfileUseCaseError)
+        ) { error in
+
+            XCTAssertEqual(
+                error as? UpdateStudentProfileUseCaseError,
+                .missingSkills
+            )
         }
     }
 }

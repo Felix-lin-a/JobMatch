@@ -2,46 +2,67 @@ import SwiftUI
 
 struct ContentView: View {
 
-    let matchJobUseCase = MatchJobUseCase()
-
-    func getMatchResult(job: PartTimeJob) -> MatchResult? {
-        do {
-            return try matchJobUseCase.execute(
-                job: job,
-                student: sampleStudent
-            )
-        } catch {
-            return nil
-        }
-    }
+    @StateObject var viewModel = JobViewModel()
 
     var body: some View {
-        NavigationStack {
-            List(sampleJobs) { job in
 
-                if let result = getMatchResult(job: job) {
+        TabView {
 
-                    NavigationLink(
-                        destination: JobDetailView(job: job)
-                    ) {
-                        VStack(alignment: .leading) {
+            NavigationStack {
 
-                            Text(job.title)
-                                .font(.headline)
+                List(sampleJobs, id: \.id) { job in
 
-                            Text(job.location)
-                                .font(.subheadline)
+                    if let result = viewModel.getMatchResult(job: job) {
 
-                            Text("Match score: " + String(result.score))
-                                .font(.subheadline)
+                        NavigationLink(
+                            destination: JobDetailView(
+                                job: job,
+                                errorMessage: viewModel.saveErrorMessage,
+                                onSave: {
+                                    viewModel.saveJob(job: job)
+                                }
+                            )
+                        ) {
 
-                            ForEach(result.reasons, id: \.self) { reason in
-                                Text(reason)
-                                    .font(.caption)
+                            VStack(alignment: .leading) {
+
+                                Text(job.title)
+                                    .font(.headline)
+
+                                Text(job.location)
+                                    .font(.subheadline)
+
+                                Text("Match score: " + String(result.score))
+                                    .font(.subheadline)
+
+                                ForEach(result.reasons, id: \.self) { reason in
+                                    Text(reason)
+                                        .font(.caption)
+                                }
                             }
                         }
                     }
                 }
+            }
+            .tabItem {
+                Image(systemName: "briefcase")
+                Text("Jobs")
+            }
+
+            SavedJobsView(
+                savedJobs: viewModel.savedJobs
+            )
+            .tabItem {
+                Image(systemName: "bookmark")
+                Text("Saved Jobs")
+            }
+
+            ProfileView(
+                student: sampleStudent
+            )
+            .tabItem {
+                Image(systemName: "person")
+                Text("Profile")
             }
         }
     }

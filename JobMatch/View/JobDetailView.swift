@@ -8,10 +8,13 @@
 import SwiftUI
 
 struct JobDetailView: View {
-    
+
     let job: PartTimeJob
-    
+    let errorMessage: String
+    let onSave: () -> Void
+
     var body: some View {
+
         VStack(alignment: .leading, spacing: 16) {
 
             Text(job.title)
@@ -37,6 +40,13 @@ struct JobDetailView: View {
             ForEach(job.availableDays, id: \.self) { day in
                 Text(day)
             }
+
+            Button("Save Job") {
+                onSave()
+            }
+
+            Text(errorMessage)
+                .font(.caption)
 
             Spacer()
         }
